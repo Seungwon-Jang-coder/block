@@ -1,3 +1,5 @@
+# find data_split/ -type f | while read f; do file "$f" | grep -q 'Web/P image' && echo "삭제: $f" && rm "$f"; done
+
 import tensorflow as tf
 from keras.utils import image_dataset_from_directory
 from keras import layers, models, Sequential, Input

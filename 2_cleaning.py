@@ -78,3 +78,4 @@ if __name__ == '__main__':
         'data_split/test'
     ]
     clean_all(root_dirs)
+    

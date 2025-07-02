@@ -79,3 +79,44 @@ plt.show()
 # 7. 테스트셋 최종 평가
 test_loss, test_acc = model.evaluate(test_ds)
 print(f"Test Accuracy: {test_acc:.4f}")
+
+# 8. 클래스별 정확도 등 상세 분석 (추가)
+import numpy as np
+from sklearn.metrics import classification_report, confusion_matrix
+
+y_true = []
+y_pred = []
+for images, labels in test_ds:
+    preds = model.predict(images)
+    y_true.extend(np.argmax(labels, axis=1))
+    y_pred.extend(np.argmax(preds, axis=1))
+
+y_true = np.array(y_true)
+y_pred = np.array(y_pred)
+
+print("\n=== Per-class accuracy (precision, recall, f1-score) ===")
+print(classification_report(y_true, y_pred, target_names=class_names, digits=4))
+
+# PETE의 index(라벨 번호) 구하기
+pete_idx = class_names.index('PETE')
+
+# PETE에 대해 예측이 맞은 것과 실제 PETE를 센다
+pete_true = (y_true == pete_idx)
+pete_pred = (y_pred == pete_idx)
+
+# Precision, Recall, F1-score 직접 계산
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+precision = precision_score(pete_true, pete_pred)
+recall = recall_score(pete_true, pete_pred)
+f1 = f1_score(pete_true, pete_pred)
+support = pete_true.sum()
+
+print(f"=== PETE class 성능 (테스트셋 기준) ===")
+print(f"정밀도(precision): {precision:.4f}")
+print(f"재현율(recall):    {recall:.4f}")
+print(f"F1-score:          {f1:.4f}")
+print(f"PETE 샘플 개수:    {support}")
+
+print("=== Confusion matrix ===")
+print(confusion_matrix(y_true, y_pred))
